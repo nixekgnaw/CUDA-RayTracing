@@ -1,9 +1,10 @@
 //
 // Created by 21459 on 11/25/2020.
 //
-#include <cuda.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <cuda.h>
 #include "book.h"
 #include "cpu_bitmap.h"
 
@@ -117,7 +118,11 @@ int main( void ) {
     HANDLE_ERROR( cudaEventDestroy( stop ) );
 
     HANDLE_ERROR( cudaFree( dev_bitmap ) );
-
+    FILE *f = fopen("image.ppm", "w"); // Write image to PPM file.
+    fprintf(f, "P3\n%d %d\n%d\n", bitmap.x, bitmap.y, 255);
+    for (int i = 0; i < bitmap.x * bitmap.y; i++)
+        fprintf(f, "%f %f %f ", (bitmap.pixels[i*4+0]), (bitmap.pixels[i*4+1]), (bitmap.pixels[i*4+2]));
+    fclose(f);
     // display
-    bitmap.display_and_exit();
+//    bitmap.display_and_exit();
 }

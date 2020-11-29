@@ -18,6 +18,8 @@
 #define __CPU_BITMAP_H__
 
 #include "gl_helper.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 struct CPUBitmap {
     unsigned char    *pixels;
@@ -38,6 +40,19 @@ struct CPUBitmap {
 
     unsigned char* get_ptr( void ) const   { return pixels; }
     long image_size( void ) const { return x * y * 4; }
+
+    #define BMP_Header_Length 54
+    void imgwrite() {
+        CPUBitmap*   bitmap = *(get_bitmap_ptr());
+        GLubyte BMP_Header[BMP_Header_Length];
+
+        FILE* pWritingFile;
+        pWritingFile = fopen("grab.bmp","wb");
+        if( pWritingFile == 0 )
+            exit(0);
+
+        glDrawPixels( bitmap->x, bitmap->y, GL_RGBA, GL_UNSIGNED_BYTE, bitmap->pixels );
+    }
 
     void display_and_exit( void(*e)(void*) = NULL ) {
         CPUBitmap**   bitmap = get_bitmap_ptr();
